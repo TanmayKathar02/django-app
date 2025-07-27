@@ -1,0 +1,17 @@
+{% load widget_tweaks %}
+
+{% for field in form %}
+<div class="row mb-3">
+    <div class="col-12 col-md-2 col-lg-2">
+        <label class="text-primary">{{field.label}}</label>
+    </div>
+    <div class="col-12 col-md-10 col-lg-10">
+        {% if "date" in field.label %}
+            {% render_field field class+="form-control shadow rounded" placeholder=field.label type="date" %}
+        {% else %}
+            {% render_field field class+="form-control shadow rounded" placeholder=field.label %}
+        {% endif %}
+    </div>
+    <div class="text-danger">{{field.errors}}</div>
+</div>
+{% endfor %}

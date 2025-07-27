@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+
+{% endblock %}
+{% block content %}
+
+<div class="row mt-5">
+  <p class="h1 text-center text-primary mb-3">TC Extracts</p>
+  <div class="col-12 shadow mt-5 p-5 rounded table table-responsive" id="desktop-table">
+    <table id="table_id" class="display">
+      <thead class="bg-primary text-white">
+        <tr>
+          <th>S/no</th>
+          <th>Document</th>
+          <th>Service ID</th>
+          <th>Surname</th>
+          <th>Given Name</th>
+          <th>Nationality</th>
+          <th>Issue Date</th>
+          <th>Expiry Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for object in object_list %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>
+            <a class="btn btn-link btn-sm" href="{{ object.document.document.url }}" target="_blank">
+              <i class="fa-regular fa-file-pdf fa-3x"></i>
+            </a>
+          </td>
+          <td>{{ object.document.pk }}</td>
+          <td>{{ object.surname }}</td>
+          <td>{{ object.given_name }}</td>
+          <td>{{ object.nationality }}</td>
+          <td>{{ object.issue_date }}</td>
+          <td>{{ object.expiry_date }}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-link btn-sm dropdown-toggle" type="button" data-mdb-toggle="dropdown"
+                aria-expanded="false">
+              </button>
+
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Delete</a>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-12 shadow rounded p-4 mt-3 table table-responsive" id="mobile-table">
+    <table class="table">
+      <thead class="bg-primary text-white">
+        <tr>
+          <th>S/no</th>
+          <th>Document</th>
+          <th>Service ID</th>
+          <th>Surname</th>
+          <th>Given Name</th>
+          <th>Nationality</th>
+          <th>Issue Date</th>
+          <th>Expiry Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for object in object_list %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>
+            <a class="btn btn-link btn-sm" href="{{ object.document.document.url }}" target="_blank">
+              <i class="fa-regular fa-file-pdf fa-3x"></i>
+            </a>
+          </td>
+          <td>{{ object.document.pk }}</td>
+          <td>{{ object.surname }}</td>
+          <td>{{ object.given_name }}</td>
+          <td>{{ object.nationality }}</td>
+          <td>{{ object.issue_date|date:"Y-m-d" }}</td>
+          <td>{{ object.expiry_date|date:"Y-m-d" }}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-link btn-sm dropdown-toggle" type="button" data-mdb-toggle="dropdown"
+                aria-expanded="false">
+              </button>
+
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Delete</a>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+<script src="{% static 'js/table.js' %}"></script>
+{% endblock %}

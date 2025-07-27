@@ -1,0 +1,28 @@
+{% for message in messages %}
+    <script>
+        let message = "{{message}}"
+        let message_tag = "{{message.tags}}"
+        console.log(message)
+        if (message_tag === "success" ){
+          iziToast.success({
+            title: "Success",
+            message: message,
+            position: 'topRight'
+          });
+         }
+        if (message_tag === "info" ){
+          iziToast.info({
+            title: "Info",
+            message: message,
+            position: 'topRight'
+          });
+         }
+         if (message_tag === "error" ){
+          iziToast.error({
+            title: "Error",
+            message: message,
+            position: 'topRight'
+          });
+         }
+    </script>
+{% endfor %}

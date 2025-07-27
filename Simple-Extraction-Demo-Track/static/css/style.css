@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;500&display=swap');
+
+* {
+  font-family: 'Lexend Deca', sans-serif;
+}
+
+.text-primary {
+  color: #2567D9 !important;
+}
+
+.btn-primary {
+  background-color: #2567D9 !important;
+}
+
+.bg-dark {
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.54), rgba(0, 0, 0, 0.54)), url("/static/img/bg.jpg");
+  background-color: rgba(0, 0, 0, 0.2);
+  /* background-position: center; */
+  /* Center the image */
+  /* background-repeat: no-repeat; */
+  /* Do not repeat the image */
+  /* background-size: cover; */
+  /* Resize the background image to cover the entire container */
+}
+
+.footer-sm {
+  background-color: rgba(0, 0, 0, 0.025);
+}
+
+.footer-bottom {
+  position: static;
+}
+
+.nav-link {
+  color: #fff !important;
+}
+
+.bg-primary {
+  background-color: #2567D9 !important;
+}
+
+#table_id_length {
+  margin-bottom: 15px;
+}
+
+.display {
+  overflow-x: auto;
+}
+
+.form-control {
+  border: none !important;
+  height: 3rem;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  border: none !important;
+  height: 3rem;
+}
+.pdfobject-container { height: 30rem; border: 1rem solid rgba(0,0,0,.1); }

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% comment %} {% block navbar %}{% endblock%} {% endcomment %}
+{% block content %}
+<div class="row">
+    <p class="h1 text-primary">Extract Data</p>
+    <div class="col-12 col-md-4 col-lg-4 shadow p-5 mt-5 rounded">
+        <p class="lead text-primary">Preview {{ document.file_type }} </p>
+        {% if document.file_type  == "pdf" %}
+        <div id="pdf-viewer"></div>
+        <div data-url="{{ document.document.url }}" id="pdf-url"></div>
+        {% elif document.file_type  == "docx" or document.file_type  == "doc"%}
+        <iframe src="https://docs.google.com/gview?url={{ document.document.url }}&embedded=true"></iframe>
+        {% else %}
+        <img src="{{ document.document.url }}" class="img-fluid" />
+        {% endif %}
+    </div>
+    <div class="col-12 col-md-8 col-lg-8 shadow p-5 mt-5 rounded">
+        <form method="post" action="." enctype="multipart/form-data">
+            {% csrf_token %}
+            {% include 'includes/form.html' with form=form %}
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary btn-lg shadow">Send</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/pdfobject@2.2.8/pdfobject.min.js"></script>
+<script>
+    let pdfFile = $('#pdf-url').attr('data-url');
+    PDFObject.embed(pdfFile, "#pdf-viewer");
+</script>
+{% endblock %}

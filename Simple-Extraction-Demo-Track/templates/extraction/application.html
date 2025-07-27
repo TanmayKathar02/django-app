@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="row mt-5 shadow p-5 rounded">
+    <div class="col-12 mb-3">
+        <p class="h1 text-primary text-center">Application Form</p>
+    </div>
+    <div class="col-12 col-md-2 col-lg-2">
+        <p class="lead text-primary">Service ID</p>
+    </div>
+    <div class="col-12 col-md-10 col-lg-10">
+        <select name="extract" class="js-searchBox form-control w-100" id="extract-id">
+            <option value="">Select Service ID</option>
+            {% for extract in tc_extracts %}
+            <option value="{{ extract.pk }}">{{ extract.document.pk }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-12 mt-3">
+        <button href="#" class="btn btn-primary btn-lg w-100" data-mdb-toggle="modal"
+            data-mdb-target="#email-sending-form" id="email-form-auto-fill">Auto Fill</a>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="email-sending-form" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content p-3">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary" id="exampleModalLabel">Application Form</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="email-form"></div>
+                <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'dist/js/jquery-searchbox.js' %}"></script>
+<script>
+    $('.js-searchBox').searchBox();
+    $('.formTextbox').addClass('shadow form-control')
+    $('.formTextbox').removeAttr('style')
+    $('#email-form-auto-fill').on('click', function () {
+        let extract = $('#extract-id').val()
+        $.ajax({
+            url: `/get-tc-extract/${extract}`,
+            type: "get",
+            dataType: 'json',
+            success: function (data) {
+                console.log("Success" + data)
+                iziToast.info({
+                    title: "info",
+                    message: data['message'],
+                    position: 'topRight'
+                });
+                // $('email-form').html(data.responseText);
+            },
+            error: function (data) {
+                console.log(data)
+                console.log(data.responseText)
+                if (extract) {
+                    $('#email-form').html(data.responseText)
+                } else {
+                    iziToast.info({
+                        title: "info",
+                        message: "Please select extract first",
+                        position: 'topRight'
+                    });
+                    $('#email-form').html(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Attention!</strong> Please select a document in the dropdown before clicking autofill.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    `)
+                }
+            }
+        })
+    })
+</script>
+{% endblock %}
