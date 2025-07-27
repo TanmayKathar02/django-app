@@ -47,33 +47,34 @@ The `Dockerfile` in this repository is designed to build your Django application
 ### `Dockerfile` (Example Structure)
 
 ```dockerfile
-# Use a lightweight Python base image
-FROM python:3.9-slim-buster
+# Use Python 3.11 slim image
+FROM python:3.11-slim
 
-# Set environment variables
-ENV PYTHONUNBUFFERED 1
-ENV DJANGO_SETTINGS_MODULE=your_project_name.settings # Replace with your project name
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy requirements.txt and install dependencies
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    netcat-openbsd gcc libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire Django project into the container
+# Copy application code
 COPY . /app/
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+# Copy entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
-# Expose port 8000
+# Expose port
 EXPOSE 8000
 
-# Run migrations and start the Django development server
-# For production, you'd typically use Gunicorn or uWSGI
-CMD ["sh", "-c", "python manage.py migrate && gunicorn your_project_name.wsgi:application --bind 0.0.0.0:8000"]
-# Replace 'your_project_name' with your actual Django project name
+CMD ["/app/entrypoint.sh"]
 ```
 
 ## Kubernetes Manifests
@@ -130,7 +131,7 @@ Here's a brief overview of the Kubernetes YAML files provided:
 
 The following environment variables are crucial for the Django application and PostgreSQL database. These will be stored in `secret.yaml`.
 
-* **`DJANGO_SECRET_KEY`**: A strong, unique secret key for your Django project.
+* **`SECRET_KEY`**: A strong, unique secret key for your Django project.
 
 * **`DB_NAME`**: The name of your PostgreSQL database (e.g., `mydjangodb`).
 
@@ -160,8 +161,6 @@ data:
   DB_HOST: <base64_encoded_db_host> # e.g., postgres-service
   DB_PORT: <base64_encoded_db_port> # e.g., 5432
 ```
-
-**Important**: Replace `<base64_encoded_...>` placeholders with actual base64 encoded values. You can generate them using `echo -n "your_value" | base64`.
 
 ## Step-by-Step Deployment
 
