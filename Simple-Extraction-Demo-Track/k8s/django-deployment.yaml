@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: django
-        image: sapana30/django:latest
+        image: ship18/django:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
