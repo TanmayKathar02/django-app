@@ -38,7 +38,7 @@ Before you begin, ensure you have the following installed on your system:
 
 * **kubectl**: The Kubernetes command-line tool for interacting with your cluster.
 
-* **A Django Project**: The Django project you intend to containerize and deploy. (This README assumes you have a Django project ready in the same directory as these files).
+* **A Django Project**: The Django project you intend to containerize and deploy.
 
 ## Dockerization
 
