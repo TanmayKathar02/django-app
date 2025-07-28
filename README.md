@@ -129,7 +129,7 @@ Here's a brief overview of the Kubernetes YAML files provided:
 
 ## Required Environment Variables
 
-The following environment variables are crucial for the Django application and PostgreSQL database. These will be stored in `secret.yaml`.
+The following environment variables are crucial for the Django application and PostgreSQL database. These will be stored in `secret.yaml` and `configmap.yaml`.
 
 * **`SECRET_KEY`**: A strong, unique secret key for your Django project.
 
@@ -143,24 +143,20 @@ The following environment variables are crucial for the Django application and P
 
 * **`DB_PORT`**: The port for PostgreSQL (e.g., `5432`).
 
-### `secret.yaml` (Example Structure)
+### `Commands to create secret.yaml and configmap.yaml files` 
 
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: django-secrets
-type: Opaque
-data:
-  # Base64 encoded values for security
-  # Use 'echo -n "your_secret_key" | base64' to generate these
-  DJANGO_SECRET_KEY: <base64_encoded_django_secret_key>
-  DB_NAME: <base64_encoded_db_name>
-  DB_USER: <base64_encoded_db_user>
-  DB_PASSWORD: <base64_encoded_db_password>
-  DB_HOST: <base64_encoded_db_host> # e.g., postgres-service
-  DB_PORT: <base64_encoded_db_port> # e.g., 5432
-```
+  ```bash
+   kubectl create secret generic django-secrets   --from-literal=SECRET_KEY=enter-your-secret-key  --from-literal=DB_PASSWORD=enter-db-password
+   ```
+```bash
+   kubectl get secret
+   ```
+ ```bash
+   kubectl create configmap django-config   --from-literal=DB_NAME=db-name   --from-literal=DB_USER=db-user   --from-literal=DB_HOST=postgres   --from-literal=DB_PORT=5432
+   ```
+```bash
+   kubectl get configmap
+   ```
 
 ## Step-by-Step Deployment
 
@@ -168,9 +164,7 @@ Follow these steps to deploy your Django application on Minikube:
 
 1. **Clone this repository** (or ensure your Django project and these files are in the same directory).
 
-2. **Update `Dockerfile`**:
-
-   * Open `Dockerfile` and replace `your_project_name` with the actual name of your Django project.
+2. **`Dockerfile`**:
 
    * Ensure your `requirements.txt` is up-to-date with all Django project dependencies.
 
@@ -180,6 +174,7 @@ Follow these steps to deploy your Django application on Minikube:
    ```bash
    docker build -t django-app:latest .
    ```
+   
 
 4. **Load the Docker Image into Minikube**:
    Minikube needs access to the image you just built.
@@ -188,28 +183,19 @@ Follow these steps to deploy your Django application on Minikube:
    minikube image load django-app:latest
    ```
 
-5. **Configure `secret.yaml`**:
-
-   * Open `secret.yaml`.
-
-   * Generate base64 encoded values for `DJANGO_SECRET_KEY`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, and `DB_PORT`.
-
-   * Replace the `<base64_encoded_...>` placeholders with your generated values.
-
-6. **Apply Kubernetes Manifests**:
+5. **Apply Kubernetes Manifests**:
    Apply the YAML files in the following order:
 
    ```bash
    kubectl apply -f pvc.yaml
    kubectl apply -f postgres-deployment.yaml
    kubectl apply -f postgres-service.yaml
-   kubectl apply -f secret.yaml
    kubectl apply -f django-deployment.yaml
    kubectl apply -f django-service.yaml
    kubectl apply -f ingress.yaml
    ```
 
-7. **Verify Deployment**:
+6. **Verify Deployment**:
    Check the status of your pods:
 
    ```bash
@@ -230,7 +216,7 @@ Follow these steps to deploy your Django application on Minikube:
    kubectl get ingress
    ```
 
-8. **Access the Application**:
+7. **Access the Application**:
    Once all pods are running and the Ingress is ready, open your web browser and navigate to:
 
    ```
@@ -243,7 +229,7 @@ Follow these steps to deploy your Django application on Minikube:
 
 * **Migrations and Static Files**: The `Dockerfile` and `django-deployment.yaml` are configured to run `python manage.py migrate` and `python manage.py collectstatic --noinput` automatically when the Django pod starts. This ensures your database schema is up-to-date and static files are collected.
 
-* **Environment Variables**: Environment variables are injected into the Django pod via the `secret.yaml`. Ensure your Django `settings.py` is configured to read these variables (e.g., using `os.environ.get('DB_NAME')`).
+* **Environment Variables**: Environment variables are injected into the Django pod via the `secret.yaml`. Ensure your Django `settings.py` is configured to read these variables.
 
 * **Production Readiness**: This setup is for local development with Minikube. For production environments, consider using a more robust WSGI server (like Gunicorn or uWSGI), a dedicated static file server (like Nginx), and a managed database service.
 
