@@ -256,11 +256,35 @@ Follow these steps to deploy your Django application on Minikube:
    Once all pods are running and the Ingress is ready, open your web browser and navigate to:
 
    ```
-   [http://demo.local](http://demo.local)
+   [http://demo.local]
    ```
 
    You should see your Django application running.
 
+   Using NodePort
+
+   Change the service type to NodePort
+
+   ```bash
+   kubectl get svc
+   ```
+   ```bash
+   kubectl edit svc django
+   ```
+   ```bash
+   type:ClusterIP <--------NodePort
+   ```
+   save esc :wq
+   
+   ```bash
+   kubectl get svc
+   ```
+   service has been change to NodePort and port is been added
+
+   access the application in your browser
+   ```
+   http://CLUSTER-IP:Node-port
+   ```
 ## Important Notes
 
 * **Migrations and Static Files**: The `Dockerfile` and `django-deployment.yaml` are configured to run `python manage.py migrate` and `python manage.py collectstatic --noinput` automatically when the Django pod starts. This ensures your database schema is up-to-date and static files are collected.
