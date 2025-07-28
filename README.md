@@ -180,6 +180,9 @@ Follow these steps to deploy your Django application on Minikube:
    docker login
    ```
    ```bash
+    docker image tag youruser/your-image:1.0.0 youruser/your-image:latest
+   ```
+   ```bash
    docker push docker-username/django-app:latest
    ```
 
