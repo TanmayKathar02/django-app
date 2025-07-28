@@ -174,16 +174,49 @@ Follow these steps to deploy your Django application on Minikube:
    ```bash
    docker build -t django-app:latest .
    ```
-   
+   push the image to docker registry
 
-4. **Load the Docker Image into Minikube**:
+    ```bash
+   docker login
+   ```
+   ```bash
+   docker push docker-username/django-app:latest
+   ```
+
+5. **Load the Docker Image into Minikube**:
    Minikube needs access to the image you just built.
 
    ```bash
-   minikube image load django-app:latest
+   minikube image load docker-username/django-app:latest
    ```
+6. **Create secret and configmap before applying the kubernetes manifests files**:
 
-5. **Apply Kubernetes Manifests**:
+ ```bash
+   kubectl create secret generic django-secrets   --from-literal=SECRET_KEY=enter-your-secret-key  --from-literal=DB_PASSWORD=enter-db-password
+   ```
+```bash
+   kubectl get secret
+   ```
+ ```bash
+   kubectl create configmap django-config   --from-literal=DB_NAME=db-name   --from-literal=DB_USER=db-user   --from-literal=DB_HOST=postgres   --from-literal=DB_PORT=5432
+   ```
+```bash
+   kubectl get configmap
+   ```
+7. **Edit django-deployment.yaml **:
+   Replace the image with your-image
+   ```bash
+   vi django-deployment.yaml
+   ```
+   ```
+      spec:
+      containers:
+      - name: django
+        image: ship18/django:latest <----- change the image
+   ```
+   save esc wq!
+   
+6. **Apply Kubernetes Manifests**:
    Apply the YAML files in the following order:
 
    ```bash
@@ -195,7 +228,7 @@ Follow these steps to deploy your Django application on Minikube:
    kubectl apply -f ingress.yaml
    ```
 
-6. **Verify Deployment**:
+7. **Verify Deployment**:
    Check the status of your pods:
 
    ```bash
@@ -216,7 +249,7 @@ Follow these steps to deploy your Django application on Minikube:
    kubectl get ingress
    ```
 
-7. **Access the Application**:
+8. **Access the Application**:
    Once all pods are running and the Ingress is ready, open your web browser and navigate to:
 
    ```
